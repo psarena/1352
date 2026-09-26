@@ -18,14 +18,16 @@
         font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         overflow-x: hidden;
       }
+      
+      /* خلفية الصفحة صورة ps4.png مع تعتيم فخم */
       body::after {
         content: '';
         position: fixed;
         inset: 0;
         background: 
-          radial-gradient(circle 800px at 50% -10%, rgba(255, 20, 50, 0.22), transparent 70%),
-          radial-gradient(circle 600px at 50% 110%, rgba(180, 0, 30, 0.18), transparent 70%),
-          linear-gradient(180deg, #090306 0%, #040102 100%);
+          linear-gradient(180deg, rgba(9, 3, 6, 0.88) 0%, rgba(4, 1, 2, 0.93) 100%),
+          url('ps4.png') no-repeat center center fixed;
+        background-size: cover;
         z-index: 0;
         pointer-events: none;
       }
@@ -74,28 +76,64 @@
         text-shadow: 0 0 10px rgba(255, 50, 80, 0.6);
       }
 
-      /* running: a spinner under the brand. jb.js sets body.done / body.fail / body.log. */
+      /* حاوية الصفحة الكلية لتوزيع العناصر (منطقة التحميل في المنتصف، والعناوين في الأسفل) */
+      #wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 1250px;
+        margin: 0 auto;
+        min-height: calc(100vh - 100px);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      /* حاوية التحميل في المنتصف تماماً */
+      .center-loader-area {
+        margin: auto 0;
+        text-align: center;
+        position: relative;
+        height: 120px;
+      }
+
       #spin {
-        position: fixed;
-        top: calc(50% - 20px);
+        position: absolute;
+        top: 50%;
         left: 50%;
-        width: 56px;
-        height: 56px;
-        margin: -28px 0 0 -28px;
-        border: 4px solid rgba(255, 50, 80, 0.2);
+        width: 90px;
+        height: 90px;
+        margin: -45px 0 0 -45px;
+        border: 4px solid rgba(255, 50, 80, 0.15);
         border-top-color: #ff1a3c;
         border-radius: 50%;
-        animation: spin 0.9s linear infinite;
+        animation: spin 1s linear infinite;
         z-index: 10;
+        background: rgba(18, 4, 8, 0.8);
+        box-shadow: 0 0 25px rgba(255, 26, 60, 0.35);
       }
+
+      #center-logo {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 46px;
+        height: 46px;
+        margin: -23px 0 0 -23px;
+        object-fit: contain;
+        z-index: 11;
+        filter: drop-shadow(0 0 10px rgba(255, 26, 60, 0.8));
+      }
+
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
+
       #msg {
-        position: fixed;
-        top: calc(50% + 45px);
+        position: absolute;
+        top: calc(50% + 55px);
         left: 0;
         right: 0;
         text-align: center;
@@ -105,17 +143,7 @@
         color: #ff8598;
         display: none;
         z-index: 10;
-      }
-      
-      #wrap {
-        position: relative;
-        z-index: 1;
-        max-width: 1250px;
-        margin: 20px auto 0;
-        padding: 0 24px 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
+        text-shadow: 0 0 10px rgba(255, 26, 60, 0.5);
       }
       
       #state,
@@ -123,10 +151,12 @@
         display: none;
       }
 
-      body.done #spin {
+      body.done #spin,
+      body.done #center-logo {
         display: none;
       }
-      body.fail #spin {
+      body.fail #spin,
+      body.fail #center-logo {
         display: none;
       }
       body.fail #msg {
@@ -141,6 +171,7 @@
 
       /* ?log=1 -- the full step log */
       body.log #spin,
+      body.log #center-logo,
       body.log #msg {
         display: none;
       }
@@ -164,13 +195,18 @@
         color: #c8ced8;
       }
 
-      /* شبكة كروت العناوين والفروع (المربعات الستة) السفلية */
+      /* شبكة كروت العناوين والفروع (المربعات الستة) في الأسفل تماماً */
+      .footer-grid-container {
+        margin-top: auto;
+        padding-top: 20px;
+      }
+
       .info-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 16px;
         max-width: 1050px;
-        margin: 40px auto 0;
+        margin: 0 auto;
       }
 
       .info-card {
@@ -272,15 +308,18 @@
       </div>
     </div>
     
-    <div id="spin"></div>
-    <div id="msg">Restart your console</div>
-    
     <div id="wrap">
-      <div id="state"></div>
-      <div id="out"></div>
+      <!-- منطقة التحميل واللوجو في منتصف الصفحة -->
+      <div class="center-loader-area">
+        <div id="spin"></div>
+        <img id="center-logo" src="logo.png" alt="Static Logo" />
+        <div id="msg">Restart your console</div>
+        <div id="state"></div>
+        <div id="out"></div>
+      </div>
 
-      <!-- العناوين ومربعات التواصل والخدمات الستة في الأسفل -->
-      <div>
+      <!-- العناوين ومربعات التواصل والخدمات الستة في أسفل الصفحة تماماً -->
+      <div class="footer-grid-container">
         <div class="info-grid">
           <div class="info-card">
             <div class="icon-box"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
@@ -332,7 +371,7 @@
     </div>
 
     <script type="module">
-      import "./jb.js?v=19";[cite: 15]
+      import "./jb.js?v=19";
     </script>
   </body>
 </html>
